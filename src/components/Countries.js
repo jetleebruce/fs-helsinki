@@ -1,49 +1,43 @@
 import React from "react";
-import Country from "./Country";
+import Weather from "./Weather";
 
-const Countries = ({ countries, filter, showCountry }) => {
+const Countries = ({ handleClick, countries }) => {
   console.log(countries);
-  const countriesFiltered = countries.filter((country) =>
-    country.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  if (countries.length > 10) {
+    return <div>Too much coinsidence</div>;
+  }
+  if (countries.length === 1) {
+    const { name, capital, population, languages, flag } = countries[0];
 
-  if (countriesFiltered.length === countries.length) {
-    return <div>Empty</div>;
-  } else if (countriesFiltered.length === 1) {
-    return countriesFiltered.map((country) => (
-      <div key={country.name}>
-        <h1>{country.name}</h1>
-        <p>capital {country.capital}</p>
-        <p>population {country.population}</p>
-        <h2>languages</h2>
+    return (
+      <div>
+        <h3>{name}</h3>
+        <p>Capital: {capital}</p>
+        <p>Population: {population}</p>
+        <p>Languages:</p>
         <ul>
-          {country.languages.map((language) => (
-            <li key={language.name}>{language.name}</li>
+          {languages.map(({ name }) => (
+            <li key={name}>{name}</li>
           ))}
         </ul>
-        <div>
-          <img
-            src={country.flag}
-            alt={`Flag of ${country.name}`}
-            height='60'
-            width='60'
-          />
-        </div>
+        <img src={flag} alt={name} width='200px' />
+        <Weather capital={capital} />
       </div>
-    ));
-  } else if (countriesFiltered.length <= 10) {
-    return countriesFiltered.map((country) => (
-      <div key={country.name}>
-        <Country name={country.name} />
-        <button type='button' value={country.name} onClick={showCountry}>
-          show
-        </button>
-        <br />
-      </div>
-    ));
-  } else {
-    return <div>Too many matches, specify another filter</div>;
+    );
   }
+
+  return (
+    <div>
+      {countries.map(({ name }) => (
+        <>
+          <p key={name}>{name}</p>
+          <button onClick={handleClick} data-name={name}>
+            show
+          </button>{" "}
+        </>
+      ))}
+    </div>
+  );
 };
 
 export default Countries;
